@@ -689,7 +689,8 @@ void OLED_SetCursor(uint8_t lineNumber, uint8_t cursorPosition) {
 
 /***************************************************************************************************
  void OLED_DisplayLogo(char *ptr_Logo)
- ****************************************************************************************************
+ ************#include
+ <Arduino.h>****************************************************************************************
  * I/P Arguments   : Array Bit Map(Address of Bit Map) to be displayed.
  * Return value    : none
  * description  :
