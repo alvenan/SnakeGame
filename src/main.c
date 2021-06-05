@@ -1,61 +1,24 @@
-/**
- * Necessário para usar as macros (ex: _delay_ms);
- */
-#define F_CPU 16000000UL
+#include "oled.h"
 
-/**
- * Inclui as definições dos registrados do ATMEGA328p ou ATMEGA2560;
- */
-#include <avr/io.h>
-
-/**
- * Necessário para usar as interrupções do AVR;
- */
-#include <avr/interrupt.h>
-
-/**
- * Biblioteca que inclui a macro _delay_ms;
- */
-#include <util/delay.h>
-
-/**
- * Lib C
- */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-/**
- * Lib lcd
- */
-#include "lcd.h"
-
-/**
- * Diretivas
- */
-#define TRUE 1
-
-/**
- * Função principal e de entrada do programa;
- */
-int main(void) {
-    unsigned int count = 0;
-    char string[10];
-    /**
-     * Inicializa o Display LCD;
-     */
-    DisplayLCD_Init();
-    DisplayLCD_Cmd(LCD_Clear);
-    DisplayLCD_Cmd(LCD_Cursor_Off);
-    DisplayLCD_Out(1, 1, (char*)"Display 16x2");
-    DisplayLCD_Out(2, 1, "Count:");
-
-    for (;;) {
-        count++;
-        sprintf((char*)string, "%d ", count);
-        DisplayLCD_Out(2, 7, (char*)string);
-        _delay_ms(200);
+void main() {
+    uint8_t data = 0x00;
+    uint8_t v1 = 1, v2 = 0;
+    OLED_Init();   // initialize the OLED
+    OLED_Clear();  // clear the display (for good measure)
+    while (1) {
+        for (uint8_t page = 0; page < 8; page++) {
+            OLED_SetCursor(page, 0);
+            data = v2;
+            for (uint8_t line = 0; line < 8; line++) {
+                data ^= (v1 << line);
+                for (uint8_t column = 0; column < 128; column++) {
+                    oledSendByte(data);
+                    _delay_ms(1);
+                }
+                OLED_SetCursor(page, 0);
+            }
+        }
+        v1 == 1 ? 0 : 1;
+        v2 = data;
     }
-
-    return 0;
 }
