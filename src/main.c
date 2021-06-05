@@ -18,7 +18,7 @@ void makeBox() {
     }
 }
 
-uint8_t leftToRight(uint8_t data, uint8_t toggle) {
+uint8_t topToBottom(uint8_t data, uint8_t toggle) {
     uint8_t aux_data = data;
     for (uint8_t page = 0; page < 8; page++) {
         OLED_SetCursor(page, 0);
@@ -46,7 +46,7 @@ uint8_t zero() {
         }
     }
 }
-uint8_t topToBottom(uint8_t data, uint8_t toggle) {
+uint8_t leftToRight(uint8_t data, uint8_t toggle) {
     uint8_t aux_data = data;
 
     for (uint8_t column = 0; column < 128; column++) {
