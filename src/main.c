@@ -1,8 +1,6 @@
-#include <Arduino.h>
-
 #include "oled.h"
 
-void makeBox() {
+void doWall() {
     for (uint8_t page = 1; page < 8; page++) {
         OLED_SetCursor(page, 0);
         for (uint8_t column = 0; column < 128; column++) {
@@ -15,6 +13,14 @@ void makeBox() {
             else
                 oledSendByte(0x00);
         }
+    }
+}
+
+void doScore() {
+    for (uint8_t score = 0; score < 256; score++) {
+        OLED_SetCursor(0, 0);
+        OLED_Printf("%d", score);
+        _delay_ms(100);
     }
 }
 
@@ -34,18 +40,7 @@ uint8_t topToBottom(uint8_t data, uint8_t toggle) {
     }
     return aux_data;
 }
-uint8_t zero() {
-    for (uint8_t column = 0; column < 128; column++) {
-        for (uint8_t page = 0; page < 8; page++) {
-            OLED_SetCursor(page, column);
-            for (uint8_t line = 0; line < 8; line++) {
-                oledSendByte(0);
-                OLED_SetCursor(page, column);
-                _delay_ms(1);
-            }
-        }
-    }
-}
+
 uint8_t leftToRight(uint8_t data, uint8_t toggle) {
     uint8_t aux_data = data;
 
@@ -60,19 +55,15 @@ uint8_t leftToRight(uint8_t data, uint8_t toggle) {
                 _delay_ms(1);
             }
         }
-        return aux_data;
     }
+    return aux_data;
 }
 
 void main() {
-    uint8_t data = 0x00;
-    uint8_t v1 = 1;
     OLED_Init();   // initialize the OLED
-    OLED_Clear();  // clear the display (for good measure)
-                   // zero();
-    /* makeBox(); */
+    OLED_Clear();  // clear the doScore()display (for good measure)
+    doWall();
     while (1) {
-        data = topToBottom(data, v1);
-        v1 == 1 ? 0 : 1;
+        doScore();
     }
 }
