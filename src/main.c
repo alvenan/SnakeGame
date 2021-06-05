@@ -17,9 +17,9 @@ void doWall() {
 }
 
 void doScore() {
-    for (uint8_t score = 0; score < 256; score++) {
+    for (uint16_t score = 0x0000; score < 0xFFFF; score++) {
         OLED_SetCursor(0, 0);
-        OLED_Printf("%d", score);
+        OLED_Printf("%u", score);
         _delay_ms(100);
     }
 }
@@ -66,16 +66,13 @@ void turnOnPixel(uint8_t line, uint8_t column) {
     OLED_SetCursor(page, column);
     oledSendByte((1 << page_line));
 }
+
 void main() {
     OLED_Init();   // initialize the OLED
     OLED_Clear();  // clear the doScore()display (for good measure)
-                   /*    doWall();
-                      while (1) {
-                          doScore();
-                      } */
+    doWall();
     turnOnPixel(55, 10);
-    /*     OLED_SetCursor(1, 60);
-        for (int i = 0; i < 5; i++) {
-            oledSendByte(0x1F);
-        } */
+    while (1) {
+        doScore();
+    }
 }

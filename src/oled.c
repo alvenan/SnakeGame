@@ -318,10 +318,11 @@ void OLED_DisplayNumber(uint8_t v_numericSystem_u8, uint32_t v_number_u32,
     } else if (v_number_u32 == 0) {
         /* If the number is zero then update the array with the same for
          * displaying */
-        for (i = 0;
-             ((i < v_numOfDigitsToDisplay_u8) && (i < C_MaxDigitsToDisplay_U8));
-             i++)
-            OLED_DisplayChar('0');
+        //   for (i = 0;
+        //      ((i < v_numOfDigitsToDisplay_u8) && (i <
+        //      C_MaxDigitsToDisplay_U8));
+        //    i++)
+        OLED_DisplayChar('0');
     } else {
         for (i = 0; i < v_numOfDigitsToDisplay_u8; i++) {
             /* Continue extracting the digits from right side
