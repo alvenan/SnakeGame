@@ -59,11 +59,23 @@ uint8_t leftToRight(uint8_t data, uint8_t toggle) {
     return aux_data;
 }
 
+void turnOnPixel(uint8_t line, uint8_t column) {
+    uint8_t page, page_line;
+    page_line = line % 8;
+    page = (line - page_line) / 8;
+    OLED_SetCursor(page, column);
+    oledSendByte((1 << page_line));
+}
 void main() {
     OLED_Init();   // initialize the OLED
     OLED_Clear();  // clear the doScore()display (for good measure)
-    doWall();
-    while (1) {
-        doScore();
-    }
+                   /*    doWall();
+                      while (1) {
+                          doScore();
+                      } */
+    turnOnPixel(55, 10);
+    /*     OLED_SetCursor(1, 60);
+        for (int i = 0; i < 5; i++) {
+            oledSendByte(0x1F);
+        } */
 }
