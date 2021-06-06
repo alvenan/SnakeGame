@@ -1,6 +1,17 @@
 #include "snake.h"
 
 void main() {
+        snake snakeHandler = {
+                .direction = RIGHT,
+                .head      = 0,
+                .tail      = 0,
+                .size      = 3,
+
+                .draw       = &drawSnake,
+        };
+
+        snakeHandler.draw(0);
+
         OLED_Init();   // initialize the OLED
         OLED_Clear();  // clear the doScore()display (for good measure)
         initPixelMatrix();

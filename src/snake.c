@@ -10,6 +10,26 @@ void initPixelMatrix() {
         }
 }
 
+void drawBlock(int x_coordinate, int y_coordinate);
+{
+        //@TODO: function to draw a block at screen
+
+        //first check if block position is valid
+        return 0;
+}
+
+void drawFood(snakeDirection dir)
+{
+        //@TODO: function to randomize which position food will appear
+        return 0;
+}
+
+int drawSnake(snakeDirection dir)
+{
+        //@TODO: function to update snake draw at display
+        return 0;
+}
+
 void drawWall() {
         for (uint8_t page = 1; page < 8; page++) {
                 OLED_SetCursor(page, 0);
