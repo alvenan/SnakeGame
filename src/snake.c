@@ -10,7 +10,7 @@ void initPixelMatrix() {
         }
 }
 
-void doWall() {
+void drawWall() {
         for (uint8_t page = 1; page < 8; page++) {
                 OLED_SetCursor(page, 0);
                 for (uint8_t column = 0; column < 128; column++) {
@@ -47,7 +47,7 @@ void updatePageLine(uint8_t line) {
         page_line[0] = (line - page_line[1]) / 8;  // page
 }
 
-void doScore(uint8_t score) {
+void drawScore(uint8_t score) {
         OLED_SetCursor(0, 0);
         OLED_Printf("%u", score);
         _delay_ms(100);

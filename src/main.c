@@ -7,10 +7,10 @@ void main() {
 
         int score = 0;
 
-        doWall();
+        drawWall();
         while (1) {
                 for (uint8_t i = 8; i < 64; i++) {
-                        doScore(score);
+                        drawScore(score);
                         for (uint8_t j = 1; j < 127; j++) {
                                 togglePixel(i, j);
                                 togglePixel(i, j + 1);
