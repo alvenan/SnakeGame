@@ -47,12 +47,10 @@ void updatePageLine(uint8_t line) {
         page_line[0] = (line - page_line[1]) / 8;  // page
 }
 
-void doScore() {
-        for (uint16_t score = 0x0000; score < 0xFFFF; score++) {
-                OLED_SetCursor(0, 0);
-                OLED_Printf("%u", score);
-                _delay_ms(100);
-        }
+void doScore(uint8_t score) {
+        OLED_SetCursor(0, 0);
+        OLED_Printf("%u", score);
+        _delay_ms(100);
 }
 
 uint8_t topToBottom(uint8_t data, uint8_t toggle) {

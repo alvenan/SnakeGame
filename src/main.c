@@ -5,21 +5,24 @@ void main() {
         OLED_Clear();  // clear the doScore()display (for good measure)
         initPixelMatrix();
 
+        int score = 0;
+
+        doWall();
         while (1) {
-                for (uint8_t i = 0; i < 64; i++) {
-                        for (uint8_t j = 0; j < 128; j++) {
+                for (uint8_t i = 8; i < 64; i++) {
+                        doScore(score);
+                        for (uint8_t j = 1; j < 127; j++) {
                                 togglePixel(i, j);
                                 togglePixel(i, j + 1);
                                 togglePixel(i + 1, j);
                                 togglePixel(i + 1, j + 1);
                                 _delay_ms(10);
-                                OLED_Clear()
+                                togglePixel(i, j);
+                                togglePixel(i, j + 1);
+                                togglePixel(i + 1, j);
+                                togglePixel(i + 1, j + 1);
                         }
+                        score += 1;
                 }
         }
-
-        /*     doWall();
-            while (1) {
-                doScore();
-            } */
 }
