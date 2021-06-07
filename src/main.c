@@ -2,14 +2,14 @@
 
 void main() {
         snake snakeHandler = {
-                .direction = RIGHT,
-                .head      = 0,
-                .tail      = 0,
-                .size      = 3,
+            .direction = RIGHT,
+            .head = 0,
+            .tail = 0,
+            .size = 3,
 
-                .draw       = &drawSnake,
+            .draw = &drawSnake,
         };
-
+        // Teste do Github
         snakeHandler.draw(0);
 
         OLED_Init();   // initialize the OLED
