@@ -18,6 +18,13 @@
 #define LEFT_WALL       0
 #define RIGHT_WALL      127
 
+#define SET_BLOCK_MASK(BLOCK_X_POS) ((BLOCK_X_POS%2 == 0)? 0x0F : 0xF0)
+
+typedef enum blockStatusType {
+    EMPTY_BLOCK,
+    FULL_BLOCK,
+    UNKOWN_BLOCK
+}blockStatus;
 
 typedef enum snakeDirectionType {
     UP,
@@ -25,6 +32,12 @@ typedef enum snakeDirectionType {
     RIGHT,
     LEFT
 }snakeDirection;
+
+typedef struct pixelType{
+    uint8_t page;
+    uint8_t bit;
+    uint8_t segment;
+}pixel;
 
 typedef struct snakeType{
     int size;
@@ -41,7 +54,7 @@ void drawWall();
 void drawScore(uint8_t score);
 void drawFood();
 int drawSnake(snakeDirection dir);
-void drawEmptySpace();
+void drawEmptyBlock();
 
 uint8_t topToBottom(uint8_t data, uint8_t toggle);
 uint8_t leftToRight(uint8_t data, uint8_t toggle);

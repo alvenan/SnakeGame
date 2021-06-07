@@ -90,7 +90,8 @@ typedef enum { E_BINARY = 2, E_DECIMAL = 10, E_HEX = 16 } NumericSystem_et;
 
 #define SCREEN_DRAW_REGION_TOTAL_PIXELS     (DISPLAY_TOTAL_PIXELS - (SCREEN_WALL_TOTAL_PIXELS + SCREEN_SCORE_TOTAL_PIXELS))
 
-#define BLOCK_TOTAL_PIXELS      16 //4x4 block
+#define BLOCK_SIDE_TOTAL_PIXELS 4
+#define BLOCK_TOTAL_PIXELS      (BLOCK_SIDE_TOTAL_PIXELS*BLOCK_SIDE_TOTAL_PIXELS)
 #define SCREEN_TOTAL_BLOCKS     (SCREEN_DRAW_REGION_TOTAL_PIXELS/BLOCK_TOTAL_PIXELS)
 /******************************************************************************
  SSD1306 ID and Command List

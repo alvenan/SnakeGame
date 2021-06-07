@@ -15,9 +15,11 @@ uint8_t OledLineNum, OledCursorPos;
  ***************************************************************************************************/
 void oledSendCommand(uint8_t cmd);
 void oledSendStart(uint8_t address);
+void oledReceiveStart(uint8_t address);
 void oledSendStop(void);
 void oledWaitForAck(void);
 void oledSendByte(uint8_t ch);
+uint8_t oledReceiveByte(bool acknack);
 /**************************************************************************************************/
 
 #define FONT_SIZE 5
@@ -835,7 +837,7 @@ void OLED_SetBrightness(uint8_t brightnessValue) {
 #endif
 
 /********************************************************************************
- Local FUnctions for sending the command/data
+ Local Functions for sending the command/data
  ********************************************************************************/
 
 void oledSendStart(uint8_t address) {
@@ -843,9 +845,16 @@ void oledSendStart(uint8_t address) {
     i2c_tx_address(address);
 }
 
+void oledReceiveStart(uint8_t address) {
+    i2c_tx_start(MASTER_RECEIVER);
+    i2c_tx_address(address);
+}
+
 void oledSendStop(void) { i2c_tx_stop(); }
 
 void oledSendByte(uint8_t ch) { i2c_tx_byte(ch); }
+
+uint8_t oledReceiveByte(bool acknack) { i2c_rx_byte(acknack); };
 
 void oledSendCommand(uint8_t cmd) {
     // oledSendStart(SSD1306_ADDRESS<<1);
