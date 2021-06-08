@@ -31,9 +31,19 @@ void updatePageLine(uint8_t line)
         page_line[0] = (line - page_line[1]) / 8; // page
 }
 
+static uint8_t inline convertBlockXCoordinateToLine(uint8_t blockXPosition)
+{
+        return (blockXPosition * BLOCK_SIDE_TOTAL_PIXELS) + 9;
+}
+
+static uint8_t inline convertBlockYCoordinateToColumn(uint8_t blockYPosition)
+{
+        return (blockYPosition * BLOCK_SIDE_TOTAL_PIXELS) + 1;
+}
+
 static uint8_t inline convertLineToPage(uint8_t line)
 {
-        return (line/8);
+        return (line / 8);
 }
 
 static uint8_t inline convertLineToBitPosition(uint8_t line)
@@ -52,7 +62,7 @@ void initPixelMatrix()
         }
 }
 
-blockStatus isEmptyBlock(int blockXPosition, int blockYPosition)
+blockStatus checkBlockStatus(int blockXPosition, int blockYPosition)
 {
         int line;
         int column;
@@ -60,8 +70,8 @@ blockStatus isEmptyBlock(int blockXPosition, int blockYPosition)
         uint8_t block[BLOCK_SIDE_TOTAL_PIXELS];
         uint8_t blockMask;
 
-        line    = (blockXPosition * BLOCK_SIDE_TOTAL_PIXELS) + 9;
-        column  = (blockYPosition * BLOCK_SIDE_TOTAL_PIXELS) + 1;
+        line = convertBlockXCoordinateToLine(blockXPosition);
+        column = convertBlockYCoordinateToLine(blockYPosition);
 
         OLED_SetCursor(convertLineToPage(line), column);
 
@@ -106,7 +116,7 @@ blockStatus isEmptyBlock(int blockXPosition, int blockYPosition)
                         }
                 }
         }
-        
+
         return EMPTY_BLOCK;
 }
 
@@ -115,7 +125,40 @@ void drawBlock(int blockXPosition, int blockYPosition)
         //@TODO: function to draw a block at screen
         //first check if block position is valid
 
-        return 0;
+        if (checkBlockStatus(blockXPosition, blockYPosition) == EMPTY_BLOCK)
+        {
+                uint8_t line = convertBlockXCoordinateToLine(blockXPosition);
+                uint8_t col = convertBlockYCoordinateToLine(blockYPosition);
+                uint8_t blockMask = SET_BLOCK_MASK(blockXPosition);
+                uint8_t block[BLOCK_SIDE_TOTAL_PIXELS];
+
+                uint8_t rx_byte;
+
+                OLED_SetCursor(convertLineToPage(line), col);
+
+                oledReceiveStart();
+
+                for (int i = 0; i < BLOCK_SIDE_TOTAL_PIXELS; i++)
+                {
+                        if (i == (BLOCK_SIDE_TOTAL_PIXELS - 1))
+                        {
+                                block[i] = oledReceiveByte(NACK);
+                        }
+                        else
+                        {
+                                block[i] = oledReceiveByte(NACK);
+                        }
+                }
+                for (int i = 0; i < BLOCK_SIDE_TOTAL_PIXELS; i++)
+                {
+                        oledSendByte(block[i] | blockMask);
+                }
+        }
+
+        else
+        {
+                //error
+        }
 }
 
 void drawFood(snakeDirection dir)
@@ -160,8 +203,6 @@ void drawWall()
                 }
         }
 }
-
-
 
 void drawScore(uint8_t score)
 {
