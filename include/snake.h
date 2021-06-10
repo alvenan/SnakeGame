@@ -39,6 +39,10 @@ typedef struct pixelType{
     uint8_t segment;
 }pixel;
 
+typedef struct blockType{
+    blockStatus status;
+}block;
+
 typedef struct snakeType{
     int size;
     int *head;

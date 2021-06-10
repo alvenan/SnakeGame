@@ -2,6 +2,8 @@
 uint8_t pixel_matrix[8][128]; // Matrix
 uint8_t page_line[2];         // [0] -> page; [1] -> line
 
+block blockField[13][31] = {0}; //limits 52/4 and 126/4 @TODO change this to use MACROS instead numbers
+
 bool checkPixel(uint8_t line, uint8_t column)
 {
         uint8_t mask = 0x00;
@@ -31,22 +33,22 @@ void updatePageLine(uint8_t line)
         page_line[0] = (line - page_line[1]) / 8; // page
 }
 
-static uint8_t inline convertBlockXCoordinateToLine(uint8_t blockXPosition)
+static uint8_t convertBlockXCoordinateToLine(uint8_t blockXPosition)
 {
-        return (blockXPosition * BLOCK_SIDE_TOTAL_PIXELS) + 9;
+        return ((blockXPosition * BLOCK_SIDE_TOTAL_PIXELS) + 9);
 }
 
-static uint8_t inline convertBlockYCoordinateToColumn(uint8_t blockYPosition)
+static uint8_t convertBlockYCoordinateToColumn(uint8_t blockYPosition)
 {
         return (blockYPosition * BLOCK_SIDE_TOTAL_PIXELS) + 1;
 }
 
-static uint8_t inline convertLineToPage(uint8_t line)
+static uint8_t convertLineToPage(uint8_t line)
 {
         return (line / 8);
 }
 
-static uint8_t inline convertLineToBitPosition(uint8_t line)
+static uint8_t convertLineToBitPosition(uint8_t line)
 {
         return (line % 8);
 }
@@ -64,94 +66,87 @@ void initPixelMatrix()
 
 blockStatus checkBlockStatus(int blockXPosition, int blockYPosition)
 {
-        int line;
-        int column;
-
-        uint8_t block[BLOCK_SIDE_TOTAL_PIXELS];
-        uint8_t blockMask;
-
-        line = convertBlockXCoordinateToLine(blockXPosition);
-        column = convertBlockYCoordinateToLine(blockYPosition);
-
-        OLED_SetCursor(convertLineToPage(line), column);
-
-        oledReceiveStart();
-
-        blockMask = SET_BLOCK_MASK(blockXPosition);
-
-        for (int i = 0; i < BLOCK_SIDE_TOTAL_PIXELS; i++)
+        if (blockField[blockXPosition][blockYPosition].status == FULL_BLOCK)
         {
-                if (i == (BLOCK_SIDE_TOTAL_PIXELS - 1))
-                {
-                        block[i] = (blockMask & oledReceiveByte(NACK));
-
-                        if (block[i] == blockMask)
-                        {
-                                return FULL_BLOCK;
-                        }
-                        else if (block[i] == 0x00)
-                        {
-                                continue;
-                        }
-                        else
-                        {
-                                return UNKOWN_BLOCK;
-                        }
-                }
-                else
-                {
-                        block[i] = (blockMask & oledReceiveByte(ACK));
-
-                        if (block[i] == blockMask)
-                        {
-                                return FULL_BLOCK;
-                        }
-                        else if (block[i] == 0x00)
-                        {
-                                continue;
-                        }
-                        else
-                        {
-                                return UNKOWN_BLOCK;
-                        }
-                }
+                return FULL_BLOCK;
+        }
+        else if (blockField[blockXPosition][blockYPosition].status == EMPTY_BLOCK)
+        {
+                return EMPTY_BLOCK;
+        }
+        else
+        {
+                return UNKOWN_BLOCK;
         }
 
         return EMPTY_BLOCK;
 }
-
+//MAYBE CHANGE TO insertBlock
 void drawBlock(int blockXPosition, int blockYPosition)
 {
         //@TODO: function to draw a block at screen
-        //first check if block position is valid
+
+        //first check if block have valid position
+        //second check if block position is validq
 
         if (checkBlockStatus(blockXPosition, blockYPosition) == EMPTY_BLOCK)
         {
                 uint8_t line = convertBlockXCoordinateToLine(blockXPosition);
-                uint8_t col = convertBlockYCoordinateToLine(blockYPosition);
+                uint8_t col = convertBlockYCoordinateToColumn(blockYPosition);
                 uint8_t blockMask = SET_BLOCK_MASK(blockXPosition);
                 uint8_t block[BLOCK_SIDE_TOTAL_PIXELS];
 
                 uint8_t rx_byte;
 
-                OLED_SetCursor(convertLineToPage(line), col);
-
-                oledReceiveStart();
-
-                for (int i = 0; i < BLOCK_SIDE_TOTAL_PIXELS; i++)
+                if (blockMask == 0x0F)
                 {
-                        if (i == (BLOCK_SIDE_TOTAL_PIXELS - 1))
+                        if (blockField[blockXPosition + 1][blockYPosition].status == EMPTY_BLOCK)
                         {
-                                block[i] = oledReceiveByte(NACK);
+                                //write 0x0F
+                                for (int i = 0; i < BLOCK_SIDE_TOTAL_PIXELS; i++)
+                                {
+                                        OLED_SetCursor(convertLineToPage(line), col + i);
+                                        oledSendByte(blockMask);
+                                }
+
+                                blockField[blockXPosition][blockYPosition].status = FULL_BLOCK;
                         }
-                        else
+                        else if (blockField[blockXPosition + 1][blockYPosition].status == FULL_BLOCK)
                         {
-                                block[i] = oledReceiveByte(NACK);
+                                for (int i = 0; i < BLOCK_SIDE_TOTAL_PIXELS; i++)
+                                {
+                                        OLED_SetCursor(convertLineToPage(line), col + i);
+                                        oledSendByte(0XFF);
+                                }
+
+                                blockField[blockXPosition][blockYPosition].status = FULL_BLOCK;
                         }
                 }
-                for (int i = 0; i < BLOCK_SIDE_TOTAL_PIXELS; i++)
+
+                if (blockMask == 0xF0)
                 {
-                        oledSendByte(block[i] | blockMask);
+                        if (blockField[blockXPosition - 1][blockYPosition].status == EMPTY_BLOCK)
+                        {
+                                //write 0XF0
+                                //MAYBE change this loop to drawBlock
+                                for (int i = 0; i < BLOCK_SIDE_TOTAL_PIXELS; i++)
+                                {
+                                        OLED_SetCursor(convertLineToPage(line), col + i);
+                                        oledSendByte(blockMask);
+                                }
+
+                                blockField[blockXPosition][blockYPosition].status = FULL_BLOCK;
+                        }
+                        else if (blockField[blockXPosition - 1][blockYPosition].status == FULL_BLOCK)
+                        {
+                                for (int i = 0; i < BLOCK_SIDE_TOTAL_PIXELS; i++)
+                                {
+                                        OLED_SetCursor(convertLineToPage(line), col + i);
+                                        oledSendByte(0XFF);
+                                }
+
+                                blockField[blockXPosition][blockYPosition].status = FULL_BLOCK;
+                        }
                 }
         }
 
