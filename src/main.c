@@ -29,24 +29,35 @@ int main()
 #if TEST_SNAKE_MOVEMENT == 1
 
         snakeHandler = initSnake();
+        drawWall();
+
         for (int i = 0; i < snakeHandler.size; i++)
+        {
                 drawBlock(snakeHandler.body[i].snakeSegment.xCoordinate, snakeHandler.body[i].snakeSegment.yCoordinate, snakeHandler.body[i].snakeSegment.status);
+                _delay_ms(500);
+        }
 
         while (1)
         {
 
                 drawSnake(&snakeHandler, RIGHT);
-                _delay_ms(500);
+                _delay_ms(200);
 
                 drawSnake(&snakeHandler, DOWN);
-                _delay_ms(500);
+                _delay_ms(200);
 
-                if (snakeHandler.head.snakeSegment.yCoordinate == 30 || snakeHandler.head.snakeSegment.xCoordinate == 10)
+                if (snakeHandler.head.snakeSegment.yCoordinate == 15 || snakeHandler.head.snakeSegment.xCoordinate == 5)
                 {
                         OLED_Clear(); // clear the doScore()display (for good measure)
+                        drawWall();
+
                         snakeHandler = initSnake();
                         for (int i = 0; i < snakeHandler.size; i++)
+                        {
+                                // OLED_Printf("x %d y %d", snakeHandler.body[i].snakeSegment.xCoordinate, snakeHandler.body[i].snakeSegment.yCoordinate);
                                 drawBlock(snakeHandler.body[i].snakeSegment.xCoordinate, snakeHandler.body[i].snakeSegment.yCoordinate, snakeHandler.body[i].snakeSegment.status);
+                                _delay_ms(500);
+                        }
 
                         _delay_ms(500);
                 }

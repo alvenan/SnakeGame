@@ -11,7 +11,7 @@ bitmask will define which line
 status = vector[col] & (1<<bitmask)
 
 */
-blockStatus blockField[13][31] = {EMPTY_BLOCK}; //limits 52/4 and 126/4 @TODO change this to use MACROS instead numbers
+blockStatus blockField[40 / BLOCK_SIDE_TOTAL_PIXELS][120 / BLOCK_SIDE_TOTAL_PIXELS] = {EMPTY_BLOCK}; //limits 52/4 and 126/4 @TODO change this to use MACROS instead numbers
 
 bool checkPixel(uint8_t line, uint8_t column)
 {
@@ -44,12 +44,12 @@ void updatePageLine(uint8_t line)
 
 static uint8_t convertBlockXCoordinateToLine(uint8_t blockXPosition)
 {
-        return ((blockXPosition * BLOCK_SIDE_TOTAL_PIXELS) + 9);
+        return ((blockXPosition * BLOCK_SIDE_TOTAL_PIXELS) + 17);
 }
 
 static uint8_t convertBlockYCoordinateToColumn(uint8_t blockYPosition)
 {
-        return (blockYPosition * BLOCK_SIDE_TOTAL_PIXELS) + 1;
+        return (blockYPosition * BLOCK_SIDE_TOTAL_PIXELS) + 4;
 }
 
 static uint8_t convertLineToPage(uint8_t line)
@@ -84,25 +84,26 @@ snake initSnake(void)
         s.size = 3;
         s.direction = RIGHT;
 
-        s.head.snakeSegment.xCoordinate = 5;
-        s.head.snakeSegment.yCoordinate = 5;
+        s.head.snakeSegment.xCoordinate = 0;
+        s.head.snakeSegment.yCoordinate = 10;
         s.head.snakeSegment.status = FULL_BLOCK;
-        s.head.next = NULL;
+        s.head.next = &s.body[1];
 
-        s.tail.snakeSegment.xCoordinate = 5;
-        s.tail.snakeSegment.yCoordinate = 3;
+        s.tail.snakeSegment.xCoordinate = 0;
+        s.tail.snakeSegment.yCoordinate = 10 - (s.size - 1);
         s.tail.snakeSegment.status = FULL_BLOCK;
-        s.tail.next = &s.body[1];
+        s.tail.next = NULL;
 
         s.body[0] = s.head;
 
-        s.body[1].snakeSegment.xCoordinate = 5;
-        s.body[1].snakeSegment.yCoordinate = 4;
-        s.body[1].snakeSegment.status = FULL_BLOCK;
+        for (int i = 1; i < (s.size - 1); i++)
+        {
+                s.body[i].snakeSegment.xCoordinate = 0;
+                s.body[i].snakeSegment.yCoordinate = (10 - i);
+                s.body[i].snakeSegment.status = FULL_BLOCK;
+        }
 
-        s.body[1].next = &s.body[0];
-
-        s.body[2] = s.tail;
+        s.body[s.size - 1] = s.tail;
 
         memset(blockField, 0, sizeof(blockField));
 
@@ -111,20 +112,25 @@ snake initSnake(void)
 
 blockStatus checkBlockStatus(int blockXPosition, int blockYPosition)
 {
-        if (blockField[blockXPosition][blockYPosition] == FULL_BLOCK)
+        if ((blockXPosition < (40 / BLOCK_SIDE_TOTAL_PIXELS)) && (blockYPosition < (120 / BLOCK_SIDE_TOTAL_PIXELS)))
         {
-                return FULL_BLOCK;
-        }
-        else if (blockField[blockXPosition][blockYPosition] == EMPTY_BLOCK)
-        {
-                return EMPTY_BLOCK;
+
+                if (blockField[blockXPosition][blockYPosition] == FULL_BLOCK)
+                {
+                        return FULL_BLOCK;
+                }
+                else if (blockField[blockXPosition][blockYPosition] == EMPTY_BLOCK)
+                {
+                        return EMPTY_BLOCK;
+                }
+                else
+                        return UNKOWN_BLOCK;
         }
         else
         {
+                OLED_Printf("GAME OVER");
                 return UNKOWN_BLOCK;
         }
-
-        return EMPTY_BLOCK;
 }
 
 //MAYBE CHANGE TO insertBlock
@@ -141,19 +147,19 @@ void drawBlock(uint8_t blockXPosition, uint8_t blockYPosition, blockStatus block
 
         if (blockTypeToDraw == FULL_BLOCK)
         {
+
                 if (checkBlockStatus(blockXPosition, blockYPosition) == EMPTY_BLOCK)
                 {
 
                         //@TODO move both if checks and all code to another function, and just call this function here
-                        if (blockMask == 0x0F)
-                        {
+
                                 if (blockField[blockXPosition + 1][blockYPosition] == EMPTY_BLOCK)
                                 {
                                         //write 0x0F
                                         for (int i = 0; i < BLOCK_SIDE_TOTAL_PIXELS; i++)
                                         {
                                                 OLED_SetCursor(convertLineToPage(line), col + i);
-                                                oledSendByte(blockMask);
+                                                oledSendByte(0xFF);
                                         }
 
                                         blockField[blockXPosition][blockYPosition] = FULL_BLOCK;
@@ -168,38 +174,15 @@ void drawBlock(uint8_t blockXPosition, uint8_t blockYPosition, blockStatus block
 
                                         blockField[blockXPosition][blockYPosition] = FULL_BLOCK;
                                 }
-                        }
 
-                        if (blockMask == 0xF0)
-                        {
-                                if (blockField[blockXPosition - 1][blockYPosition] == EMPTY_BLOCK)
-                                {
-                                        //write 0XF0
-                                        //MAYBE change this loop to drawBlock
-                                        for (int i = 0; i < BLOCK_SIDE_TOTAL_PIXELS; i++)
-                                        {
-                                                OLED_SetCursor(convertLineToPage(line), col + i);
-                                                oledSendByte(blockMask);
-                                        }
-
-                                        blockField[blockXPosition][blockYPosition] = FULL_BLOCK;
-                                }
-                                else if (blockField[blockXPosition - 1][blockYPosition] == FULL_BLOCK)
-                                {
-                                        for (int i = 0; i < BLOCK_SIDE_TOTAL_PIXELS; i++)
-                                        {
-                                                OLED_SetCursor(convertLineToPage(line), col + i);
-                                                oledSendByte(0XFF);
-                                        }
-
-                                        blockField[blockXPosition][blockYPosition] = FULL_BLOCK;
-                                }
-                        }
+ 
+                        
                 }
 
                 else
                 {
                         //error
+                        OLED_Clear();
                 }
         }
         else if (blockTypeToDraw == EMPTY_BLOCK)
@@ -221,7 +204,7 @@ void drawBlock(uint8_t blockXPosition, uint8_t blockYPosition, blockStatus block
                                 for (int i = 0; i < BLOCK_SIDE_TOTAL_PIXELS; i++)
                                 {
                                         OLED_SetCursor(convertLineToPage(line), col + i);
-                                        oledSendByte(0XF0);
+                                        oledSendByte(0X00);
                                 }
 
                                 blockField[blockXPosition][blockYPosition] = EMPTY_BLOCK;
@@ -245,7 +228,7 @@ void drawBlock(uint8_t blockXPosition, uint8_t blockYPosition, blockStatus block
                                 for (int i = 0; i < BLOCK_SIDE_TOTAL_PIXELS; i++)
                                 {
                                         OLED_SetCursor(convertLineToPage(line), col + i);
-                                        oledSendByte(0XF0);
+                                        oledSendByte(0X00);
                                 }
 
                                 blockField[blockXPosition][blockYPosition] = EMPTY_BLOCK;
@@ -263,9 +246,22 @@ void drawFood(snakeDirection dir)
 int drawSnake(snake *s, snakeDirection dir)
 {
         int delay_ms = 10;
-        snakeBody temp;
+        //@TODO check limits of array
+        snakeBody temp = s->body[s->size - 2];
+        snakeBody aux;
 
-        temp = s->body[1];
+        snakeBody currentTail = s->tail;
+        snakeBody currentHead = s->head;
+
+        for (int i = 2; i < (s->size - 1); i++)
+        {
+                aux = s->body[i - 1];
+                //@TODO change this to memcpy?
+                s->body[i].snakeSegment = aux.snakeSegment;
+                s->body[i].next = aux.next;
+        }
+
+        s->body[1].snakeSegment = s->head.snakeSegment;
 
         //@TODO: function to update snake draw at display
         if (s->direction == dir)
@@ -274,7 +270,7 @@ int drawSnake(snake *s, snakeDirection dir)
                 {
                 case (RIGHT):
 
-                        s->body[1].snakeSegment = s->head.snakeSegment;
+                        // s->body[1].snakeSegment = s->head.snakeSegment;
 
                         s->head.snakeSegment.yCoordinate = s->head.snakeSegment.yCoordinate + 1;
                         s->body[0] = s->head;
@@ -286,12 +282,12 @@ int drawSnake(snake *s, snakeDirection dir)
 
                         // s->tail.snakeSegment.yCoordinate = s->tail.snakeSegment.yCoordinate + 1;
                         s->tail.snakeSegment = temp.snakeSegment;
-                        s->tail.next = &s->body[1];
-                        s->body[2] = s->tail;
+                        // s->tail.next = &s->body[s->size-2];
+                        s->body[s->size - 1] = s->tail;
 
                         break;
                 case (DOWN):
-                        s->body[1].snakeSegment = s->head.snakeSegment;
+                        // s->body[1].snakeSegment = s->head.snakeSegment;
 
                         s->head.snakeSegment.xCoordinate = s->head.snakeSegment.xCoordinate + 1;
                         s->body[0] = s->head;
@@ -304,8 +300,8 @@ int drawSnake(snake *s, snakeDirection dir)
                         // s->tail.snakeSegment.yCoordinate = s->tail.snakeSegment.yCoordinate + 1;
                         // s->tail = s->tail.next;
                         s->tail.snakeSegment = temp.snakeSegment;
-                        s->tail.next = &s->body[1];
-                        s->body[2] = s->tail;
+                        // s->tail.next = &s->body[s->size-2];
+                        s->body[s->size - 1] = s->tail;
 
                         break;
 
@@ -319,7 +315,7 @@ int drawSnake(snake *s, snakeDirection dir)
                 switch (dir)
                 {
                 case (DOWN):
-                        s->body[1].snakeSegment = s->head.snakeSegment;
+                        // s->body[1].snakeSegment = s->head.snakeSegment;
 
                         s->head.snakeSegment.xCoordinate = s->head.snakeSegment.xCoordinate + 1;
                         s->body[0] = s->head;
@@ -332,8 +328,8 @@ int drawSnake(snake *s, snakeDirection dir)
                         // s->tail.snakeSegment.yCoordinate = s->tail.snakeSegment.yCoordinate + 1;
 
                         s->tail.snakeSegment = temp.snakeSegment;
-                        s->tail.next = &s->body[1];
-                        s->body[2] = s->tail;
+                        // s->tail.next = &s->body[s->size-2];
+                        s->body[s->size - 1] = s->tail;
 
                         break;
 
@@ -351,20 +347,33 @@ void drawWall()
                 OLED_SetCursor(page, 0);
                 for (uint8_t column = 0; column < 128; column++)
                 {
-                        if ((column == 0) || (column == 127))
+                        if ((column == 4) || (column == 123))
                         {
-                                pixel_matrix[page][column] = 0xFF;
-                                oledSendByte(0xFF);
+                                if (page == 1)
+                                {
+                                        pixel_matrix[page][column] = 0x80;
+                                        oledSendByte(0x80);
+                                }
+                                else if (page == 7)
+                                {
+                                        pixel_matrix[page][column] = 0x01;
+                                        oledSendByte(0x01);
+                                }
+                                else
+                                {
+                                        pixel_matrix[page][column] = 0xFF;
+                                        oledSendByte(0xFF);
+                                }
                         }
-                        else if (page == 1)
-                        {
-                                pixel_matrix[page][column] = 0x01;
-                                oledSendByte(0x01);
-                        }
-                        else if (page == 7)
+                        else if ((page == 1) && column > 3 && (column < 124))
                         {
                                 pixel_matrix[page][column] = 0x80;
                                 oledSendByte(0x80);
+                        }
+                        else if ((page == 7) && (column > 3) && (column < 124))
+                        {
+                                pixel_matrix[page][column] = 0x01;
+                                oledSendByte(0x01);
                         }
                         else
                         {

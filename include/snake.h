@@ -57,7 +57,7 @@ typedef struct snakeType{
     snakeBody head;
     snakeBody tail;
 
-    snakeBody body[3];
+    snakeBody body[SCREEN_TOTAL_BLOCKS];
     snakeDirection direction;
 }snake;
 
