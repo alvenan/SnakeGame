@@ -40,24 +40,34 @@ typedef struct pixelType{
 }pixel;
 
 typedef struct blockType{
+    uint8_t xCoordinate;
+    uint8_t yCoordinate;
     blockStatus status;
 }block;
 
+typedef struct snakeBodyType snakeBody;
+
+struct snakeBodyType{
+    block snakeSegment;
+    snakeBody *next;
+};
+
 typedef struct snakeType{
     int size;
-    int *head;
-    int *tail;
+    snakeBody head;
+    snakeBody tail;
 
+    snakeBody body[3];
     snakeDirection direction;
-
-    int (*draw)(snakeDirection);
 }snake;
 
-void drawBlock(int x_coordinate, int y_coordinate);
+
+void drawBlock(uint8_t x_coordinate, uint8_t y_coordinate, blockStatus blockTypeToDraw);
 void drawWall();
 void drawScore(uint8_t score);
 void drawFood();
-int drawSnake(snakeDirection dir);
+int drawSnake(snake *s, snakeDirection dir);
+snake initSnake(void);
 void drawEmptyBlock();
 
 uint8_t topToBottom(uint8_t data, uint8_t toggle);
@@ -70,5 +80,7 @@ void initPixelMatrix();
 
 
 void onUserInput();
+
+
 
 #endif
