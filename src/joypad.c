@@ -1,11 +1,10 @@
-#include "controller.h"
-
 #include <avr/interrupt.h>
 #include <avr/io.h>
 
+#include "joypad.h"
 #include "oled.h"
 
-void controller_Init() {
+void joypad_Init() {
         DDRD &= ~(1 << DDD2);
         DDRD &= ~(1 << DDD3);
         DDRD &= ~(1 << DDD4);

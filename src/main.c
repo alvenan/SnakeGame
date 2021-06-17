@@ -1,8 +1,8 @@
-#include "controller.h"
+#include "joypad.h"
 #include "snake.h"
 
 void main() {
-        controller_Init();
+        joypad_Init();
         OLED_Init();   // initialize the OLED
         OLED_Clear();  // clear the doScore()display (for good measure)
         initPixelMatrix();
