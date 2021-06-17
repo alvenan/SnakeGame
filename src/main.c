@@ -1,30 +1,6 @@
 #include "controller.h"
 #include "snake.h"
 
-ISR(PCINT2_vect) {
-        if (BUTTON_DOWN) {
-                OLED_Clear();
-                OLED_SetCursor(0, 0);
-                OLED_Printf("DOWN PUSHED");
-        } else if (BUTTON_LEFT) {
-                OLED_Clear();
-                OLED_SetCursor(0, 0);
-                OLED_Printf("LEFT PUSHED");
-        } else if (BUTTON_RIGHT) {
-                OLED_Clear();
-                OLED_SetCursor(0, 0);
-                OLED_Printf("RIGHT PUSHED");
-        } else if (BUTTON_UP) {
-                OLED_Clear();
-                OLED_SetCursor(0, 0);
-                OLED_Printf("UP PUSHED");
-        } else {
-                OLED_Clear();
-                OLED_SetCursor(0, 0);
-                OLED_Printf("RELEASED");
-        }
-}
-
 void main() {
         controller_Init();
         OLED_Init();   // initialize the OLED

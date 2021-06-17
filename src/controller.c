@@ -3,6 +3,8 @@
 #include <avr/interrupt.h>
 #include <avr/io.h>
 
+#include "oled.h"
+
 void controller_Init() {
         DDRD &= ~(1 << DDD2);
         DDRD &= ~(1 << DDD3);
@@ -16,4 +18,28 @@ void controller_Init() {
         PCICR |= (1 << PCIE2);
 
         sei();
+}
+
+ISR(PCINT2_vect) {
+        if (BUTTON_DOWN) {
+                OLED_Clear();
+                OLED_SetCursor(0, 0);
+                OLED_Printf("DOWN PUSHED");
+        } else if (BUTTON_LEFT) {
+                OLED_Clear();
+                OLED_SetCursor(0, 0);
+                OLED_Printf("LEFT PUSHED");
+        } else if (BUTTON_RIGHT) {
+                OLED_Clear();
+                OLED_SetCursor(0, 0);
+                OLED_Printf("RIGHT PUSHED");
+        } else if (BUTTON_UP) {
+                OLED_Clear();
+                OLED_SetCursor(0, 0);
+                OLED_Printf("UP PUSHED");
+        } else {
+                OLED_Clear();
+                OLED_SetCursor(0, 0);
+                OLED_Printf("RELEASED");
+        }
 }
