@@ -10,22 +10,19 @@ void initPixelMatrix() {
         }
 }
 
-void drawBlock(int x_coordinate, int y_coordinate);
-{
+void drawBlock(int x_coordinate, int y_coordinate) {
         //@TODO: function to draw a block at screen
 
-        //first check if block position is valid
+        // first check if block position is valid
         return 0;
 }
 
-void drawFood(snakeDirection dir)
-{
+void drawFood(snakeDirection dir) {
         //@TODO: function to randomize which position food will appear
         return 0;
 }
 
-int drawSnake(snakeDirection dir)
-{
+int drawSnake(snakeDirection dir) {
         //@TODO: function to update snake draw at display
         return 0;
 }
