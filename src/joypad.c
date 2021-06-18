@@ -1,44 +1,40 @@
+#include "joypad.h"
+
 #include <avr/interrupt.h>
 #include <avr/io.h>
 
-#include "joypad.h"
-#include "oled.h"
+buttonDirection direction;
+int pressedDirection;
 
-void joypad_Init() {
-        DDRD &= ~(1 << DDD2);
-        DDRD &= ~(1 << DDD3);
-        DDRD &= ~(1 << DDD4);
-        DDRD &= ~(1 << DDD5);
+int returnPressedDirection() { return pressedDirection; }
 
-        PCMSK2 |= (1 << PCINT18);
-        PCMSK2 |= (1 << PCINT19);
-        PCMSK2 |= (1 << PCINT20);
-        PCMSK2 |= (1 << PCINT21);
-        PCICR |= (1 << PCIE2);
-
-        sei();
+INT_ROUTINE {
+        if (BUTTON_UP) {
+                pressedDirection = BT_UP;
+        } else if (BUTTON_DOWN) {
+                pressedDirection = BT_DOWN;
+        } else if (BUTTON_RIGHT) {
+                pressedDirection = BT_RIGHT;
+        } else if (BUTTON_LEFT) {
+                pressedDirection = BT_LEFT;
+        } else {
+                pressedDirection = BT_RELEASED;
+        }
 }
 
-ISR(PCINT2_vect) {
-        if (BUTTON_DOWN) {
-                OLED_Clear();
-                OLED_SetCursor(0, 0);
-                OLED_Printf("DOWN PUSHED");
-        } else if (BUTTON_LEFT) {
-                OLED_Clear();
-                OLED_SetCursor(0, 0);
-                OLED_Printf("LEFT PUSHED");
-        } else if (BUTTON_RIGHT) {
-                OLED_Clear();
-                OLED_SetCursor(0, 0);
-                OLED_Printf("RIGHT PUSHED");
-        } else if (BUTTON_UP) {
-                OLED_Clear();
-                OLED_SetCursor(0, 0);
-                OLED_Printf("UP PUSHED");
-        } else {
-                OLED_Clear();
-                OLED_SetCursor(0, 0);
-                OLED_Printf("RELEASED");
-        }
+void joypad_Init() {
+        PD2_SET_IN;
+        PD2_SET_INT;
+
+        PD3_SET_IN;
+        PD3_SET_INT;
+
+        PD4_SET_IN;
+        PD4_SET_INT;
+
+        PD5_SET_IN;
+        PD5_SET_INT;
+
+        PCINT2_VECT_SET;
+        sei();
 }

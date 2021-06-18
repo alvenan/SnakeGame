@@ -9,32 +9,26 @@
 #define PAGE0 0
 #define PAGE7 7
 
-#define UP_WALL_BIT     0x01
-#define UP_WALL_PAGE    PAGE0
+#define UP_WALL_BIT 0x01
+#define UP_WALL_PAGE PAGE0
 
-#define DOWN_WALL_BIT   0x80
-#define DOWN_WALL_PAGE  PAGE7
+#define DOWN_WALL_BIT 0x80
+#define DOWN_WALL_PAGE PAGE7
 
-#define LEFT_WALL       0
-#define RIGHT_WALL      127
+#define LEFT_WALL 0
+#define RIGHT_WALL 127
 
+typedef enum snakeDirectionType { UP, DOWN, RIGHT, LEFT } snakeDirection;
 
-typedef enum snakeDirectionType {
-    UP,
-    DOWN,
-    RIGHT,
-    LEFT
-}snakeDirection;
+typedef struct snakeType {
+        int size;
+        int *head;
+        int *tail;
 
-typedef struct snakeType{
-    int size;
-    int *head;
-    int *tail;
+        snakeDirection direction;
 
-    snakeDirection direction;
-
-    int (*draw)(snakeDirection);
-}snake;
+        int (*draw)(snakeDirection);
+} snake;
 
 void drawBlock(int x_coordinate, int y_coordinate);
 void drawWall();
@@ -50,7 +44,6 @@ void togglePixel(uint8_t line, uint8_t column);
 bool checkPixel(uint8_t line, uint8_t column);
 
 void initPixelMatrix();
-
 
 void onUserInput();
 
