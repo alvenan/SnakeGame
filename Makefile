@@ -1,6 +1,6 @@
 all : main.o
 
 oled.o : oled.c oled.h
-        cc -c oled.c
+	cc -c oled.c
 clean :
-        rm oled.o
+	rm oled.o
