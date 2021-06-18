@@ -3,11 +3,6 @@
 #include <avr/interrupt.h>
 #include <avr/io.h>
 
-buttonDirection direction;
-int pressedDirection;
-
-int returnPressedDirection() { return pressedDirection; }
-
 INT_ROUTINE {
         if (BUTTON_UP) {
                 pressedDirection = BT_UP;

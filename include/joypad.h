@@ -28,7 +28,8 @@ typedef enum buttonDirectionsType {
         BT_RELEASED
 } buttonDirection;
 
+int pressedDirection;
+
 void controller_Init();
-int returnPressedDirection();  // Get the direction
 
 #endif
