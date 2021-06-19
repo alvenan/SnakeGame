@@ -6,8 +6,6 @@
 
 #include "oled.h"
 
-#include "oled.h"
-
 INT_ROUTINE {
         if (BUTTON_UP) {
                 pressedDirection = BT_UP;
