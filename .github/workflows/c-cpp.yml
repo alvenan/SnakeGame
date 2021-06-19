@@ -1,4 +1,5 @@
-name: C/C++ CI
+- name: AVR make
+  uses: bazhenov/action-avr-make@v1.0
 
 on:
   push:
