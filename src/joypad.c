@@ -1,10 +1,5 @@
 #include "joypad.h"
 
-#include <avr/interrupt.h>
-#include <avr/io.h>
-
-#include "oled.h"
-
 INT_ROUTINE {
         if (BUTTON_UP) {
                 pressedDirection = BT_UP;

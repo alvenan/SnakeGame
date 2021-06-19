@@ -1,6 +1,13 @@
 #ifndef JOYPAD_H
 #define JOYPAD_H
 
+#include <avr/io.h>
+#include <avr/interrupt.h>
+
+// #include <avr/iom32u4.h>
+
+#include "oled.h"
+
 #define BUTTON_LEFT (PINB & (1 << PINB0))
 #define BUTTON_DOWN (PINB & (1 << PINB1))
 #define BUTTON_RIGHT (PINB & (1 << PINB2))
