@@ -1,5 +1,4 @@
-- name: AVR make
-  uses: bazhenov/action-avr-make@v1.0
+name: CI
 
 on:
   push:
@@ -9,16 +8,8 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    #- name: configure
-    #  run: ./configure
-    - name: make
-      run: make
-    - name: make check
-      run: make check
-    - name: make distcheck
-      run: make distcheck
+    - uses: actions/checkout@master
+    - uses: bazhenov/action-avr-make@v1.0
