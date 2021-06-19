@@ -40,17 +40,17 @@ INT_ROUTINE {
 }
 
 void joypad_Init() {
-        PD0_SET_IN;
-        PD0_SET_INT;
+        PB0_SET_IN;
+        PB0_SET_INT;
 
-        PD1_SET_IN;
-        PD1_SET_INT;
+        PB1_SET_IN;
+        PB1_SET_INT;
 
-        PD2_SET_IN;
-        PD2_SET_INT;
+        PB2_SET_IN;
+        PB2_SET_INT;
 
-        PD3_SET_IN;
-        PD3_SET_INT;
+        PB3_SET_IN;
+        PB3_SET_INT;
 
         PCINT0_VECT_SET;
         sei();
