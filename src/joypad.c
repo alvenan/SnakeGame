@@ -6,6 +6,8 @@
 
 #include "oled.h"
 
+#include "oled.h"
+
 INT_ROUTINE {
         if (BUTTON_UP) {
                 pressedDirection = BT_UP;
@@ -45,7 +47,7 @@ void joypad_Init() {
         PB0_SET_INT;
 
         PB1_SET_IN;
-        PB2_SET_INT;
+        PB1_SET_INT;
 
         PB2_SET_IN;
         PB2_SET_INT;

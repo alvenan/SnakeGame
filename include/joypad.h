@@ -1,19 +1,16 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
-#define PB5_SET_OUT DDRB |= (1 << DDB5);
-#define LED_ON PORTB |= (1 << PORTB5)
-#define LED_OFF PORTB &= ~(1 << PORTB5)
+
+#define BUTTON_LEFT (PINB & (1 << PINB0))
+#define BUTTON_DOWN (PINB & (1 << PINB1))
+#define BUTTON_RIGHT (PINB & (1 << PINB2))
+#define BUTTON_UP (PINB & (1 << PINB3))
 
 #define PB0_SET_IN DDRB &= ~(1 << DDB0);
 #define PB1_SET_IN DDRB &= ~(1 << DDB1);
 #define PB2_SET_IN DDRB &= ~(1 << DDB2);
 #define PB3_SET_IN DDRB &= ~(1 << DDB3);
-
-#define BUTTON_LEFT (PINB & (1 << PINB0))
-#define BUTTON_DOWN (PINB & (1 << PINB2))
-#define BUTTON_RIGHT (PINB & (1 << PINB1))
-#define BUTTON_UP (PINB & (1 << PINB3))
 
 #define PB0_SET_INT PCMSK0 |= (1 << PCINT0);
 #define PB1_SET_INT PCMSK0 |= (1 << PCINT1);
