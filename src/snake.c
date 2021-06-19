@@ -237,8 +237,7 @@ void drawBlock(uint8_t blockXPosition, uint8_t blockYPosition, blockStatus block
         }
 }
 
-void drawFood(snakeDirection dir)
-{
+void drawFood(snakeDirection dir) {
         //@TODO: function to randomize which position food will appear
         return 0;
 }

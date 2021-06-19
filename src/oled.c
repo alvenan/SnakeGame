@@ -1,12 +1,6 @@
 #include "oled.h"
 
-#include <avr/interrupt.h>
-#include <avr/io.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include <util/delay.h>
 
-#include "i2c.h"
 
 uint8_t OledLineNum, OledCursorPos;
 

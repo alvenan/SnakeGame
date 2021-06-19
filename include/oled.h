@@ -13,6 +13,10 @@
 #include <avr/io.h>
 #include <stdio.h>
 #include <util/delay.h>
+#include <stdarg.h>
+
+
+#include "i2c.h"
 
 /***************************************************************************************************
  Macros to find the mod of a number

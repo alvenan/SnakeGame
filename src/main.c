@@ -1,13 +1,23 @@
+// #include "joypad.h"
 #include "snake.h"
+
+#include <stdio.h>
 
 #define TEST_DRAW_BLOCK_FUNCTION 0
 #define TEST_SNAKE_MOVEMENT 1
 
+#define XSTR(x) STR(x)
+#define STR(x) #x
+
+#define PRINT printf("DEBUG_SNAKE");
+#pragma message "The value of ABC: " XSTR(TEST_SNAKE_MOVEMENT)
+
 int main()
 {
-
+        PRINT
         snake snakeHandler = {0};
 
+        //joypad_Init();
         OLED_Init();  // initialize the OLED
         OLED_Clear(); // clear the doScore()display (for good measure)
 
