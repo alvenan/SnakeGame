@@ -6,17 +6,17 @@
 #define BUTTON_RIGHT (PINB & (1 << PINB2))
 #define BUTTON_UP (PINB & (1 << PINB3))
 
-#define PD2_SET_IN DDRB &= ~(1 << DDB0);
-#define PD3_SET_IN DDRB &= ~(1 << DDB1);
-#define PD4_SET_IN DDRB &= ~(1 << DDB2);
-#define PD5_SET_IN DDRB &= ~(1 << DDB3);
+#define PD0_SET_IN DDRB &= ~(1 << DDB0);
+#define PD1_SET_IN DDRB &= ~(1 << DDB1);
+#define PD2_SET_IN DDRB &= ~(1 << DDB2);
+#define PD3_SET_IN DDRB &= ~(1 << DDB3);
 
-#define PD2_SET_INT PCMSK0 |= (1 << PCINT0);
-#define PD3_SET_INT PCMSK0 |= (1 << PCINT1);
-#define PD4_SET_INT PCMSK0 |= (1 << PCINT2);
-#define PD5_SET_INT PCMSK0 |= (1 << PCINT3);
+#define PD0_SET_INT PCMSK0 |= (1 << PCINT0);
+#define PD1_SET_INT PCMSK0 |= (1 << PCINT1);
+#define PD2_SET_INT PCMSK0 |= (1 << PCINT2);
+#define PD3_SET_INT PCMSK0 |= (1 << PCINT3);
 
-#define PCINT2_VECT_SET PCICR |= (1 << PCIE0);
+#define PCINT0_VECT_SET PCICR |= (1 << PCIE0);
 
 #define INT_ROUTINE ISR(PCINT0_vect)
 
