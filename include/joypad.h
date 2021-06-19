@@ -1,5 +1,5 @@
-#ifndef CONTROLLER_H
-#define CONTROLLER_H
+#ifndef JOYPAD_H
+#define JOYPAD_H
 
 #define BUTTON_LEFT (PINB & (1 << PINB0))
 #define BUTTON_DOWN (PINB & (1 << PINB1))
