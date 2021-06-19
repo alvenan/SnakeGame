@@ -1,24 +1,24 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
-#define BUTTON_UP (PIND & (1 << PIND5))
-#define BUTTON_DOWN (PIND & (1 << PIND3))
-#define BUTTON_RIGHT (PIND & (1 << PIND4))
-#define BUTTON_LEFT (PIND & (1 << PIND2))
+#define BUTTON_LEFT (PINB & (1 << PINB0))
+#define BUTTON_DOWN (PINB & (1 << PINB1))
+#define BUTTON_RIGHT (PINB & (1 << PINB2))
+#define BUTTON_UP (PINB & (1 << PINB3))
 
-#define PD2_SET_IN DDRD &= ~(1 << DDD2);
-#define PD3_SET_IN DDRD &= ~(1 << DDD3);
-#define PD4_SET_IN DDRD &= ~(1 << DDD4);
-#define PD5_SET_IN DDRD &= ~(1 << DDD5);
+#define PD2_SET_IN DDRB &= ~(1 << DDB0);
+#define PD3_SET_IN DDRB &= ~(1 << DDB1);
+#define PD4_SET_IN DDRB &= ~(1 << DDB2);
+#define PD5_SET_IN DDRB &= ~(1 << DDB3);
 
-#define PD2_SET_INT PCMSK2 |= (1 << PCINT18);
-#define PD3_SET_INT PCMSK2 |= (1 << PCINT19);
-#define PD4_SET_INT PCMSK2 |= (1 << PCINT20);
-#define PD5_SET_INT PCMSK2 |= (1 << PCINT21);
+#define PD2_SET_INT PCMSK0 |= (1 << PCINT0);
+#define PD3_SET_INT PCMSK0 |= (1 << PCINT1);
+#define PD4_SET_INT PCMSK0 |= (1 << PCINT2);
+#define PD5_SET_INT PCMSK0 |= (1 << PCINT3);
 
-#define PCINT2_VECT_SET PCICR |= (1 << PCIE2);
+#define PCINT2_VECT_SET PCICR |= (1 << PCIE0);
 
-#define INT_ROUTINE ISR(PCINT2_vect)
+#define INT_ROUTINE ISR(PCINT0_vect)
 
 typedef enum buttonDirectionsType {
         BT_UP,
