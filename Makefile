@@ -1,8 +1,7 @@
-SNAKE_GAME_SOURCE_PATH  = /home/fiaj/Documents/SnakeGame/src
-SNAKE_GAME_INCLUDE_PATH = /home/fiaj/Documents/SnakeGame/include
+SNAKE_GAME_SOURCE_PATH  = src
+SNAKE_GAME_INCLUDE_PATH = include
 
-AVR_INCLUDE_PATH = /home/fiaj/.platformio/packages/toolchain-atmelavr/avr/include/
-
+AVR_INCLUDE_PATH = /include
 all : main.o
 		
 main.o : oled.o snake.o
