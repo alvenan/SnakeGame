@@ -13,6 +13,10 @@
 #include <avr/io.h>
 #include <stdio.h>
 #include <util/delay.h>
+#include <stdarg.h>
+
+
+#include "i2c.h"
 
 /***************************************************************************************************
  Macros to find the mod of a number
@@ -88,9 +92,10 @@ typedef enum { E_BINARY = 2, E_DECIMAL = 10, E_HEX = 16 } NumericSystem_et;
 #define SCREEN_DOWN_WALL_TOTAL_PIXELS       SCREEN_HORIZONTAL_WALL_TOTAL_PIXELS
 #define SCREEN_WALL_TOTAL_PIXELS            ((2*SCREEN_VERTICAL_WALL_TOTAL_PIXELS) + (2*SCREEN_HORIZONTAL_WALL_TOTAL_PIXELS))
 
-#define SCREEN_DRAW_REGION_TOTAL_PIXELS     (DISPLAY_TOTAL_PIXELS - (SCREEN_WALL_TOTAL_PIXELS + SCREEN_SCORE_TOTAL_PIXELS))
+#define SCREEN_DRAW_REGION_TOTAL_PIXELS     (40*120)//(DISPLAY_TOTAL_PIXELS - (SCREEN_WALL_TOTAL_PIXELS + SCREEN_SCORE_TOTAL_PIXELS))
 
-#define BLOCK_TOTAL_PIXELS      16 //4x4 block
+#define BLOCK_SIDE_TOTAL_PIXELS 8
+#define BLOCK_TOTAL_PIXELS      (BLOCK_SIDE_TOTAL_PIXELS*BLOCK_SIDE_TOTAL_PIXELS)
 #define SCREEN_TOTAL_BLOCKS     (SCREEN_DRAW_REGION_TOTAL_PIXELS/BLOCK_TOTAL_PIXELS)
 /******************************************************************************
  SSD1306 ID and Command List

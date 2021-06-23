@@ -19,6 +19,7 @@
 #define MASTER_TRANSMITTER 0
 #define MASTER_RECEIVER 1
 #define ACK 0
+#define NACK 1
 #define TIMEOUT 50
 
 typedef uint8_t bool;
