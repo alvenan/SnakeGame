@@ -62,6 +62,9 @@ int main()
                 {
                         drawSnake(&snakeHandler, snakeHandler.direction);
                 }
+
+                drawFood();
+
 #else
                 int steps;
 
@@ -147,7 +150,6 @@ int main()
 #endif
 
                 drawScore(1);
-
         }
         return 0;
 }
