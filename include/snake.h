@@ -24,6 +24,7 @@
 typedef enum blockStatusType {
     EMPTY_BLOCK,
     FULL_BLOCK,
+    FOOD_BLOCK,
     UNKOWN_BLOCK
 }blockStatus;
 
@@ -69,7 +70,7 @@ typedef struct snakeType{
 void drawBlock(uint8_t x_coordinate, uint8_t y_coordinate, blockStatus blockTypeToDraw);
 void drawWall();
 void drawScore(uint8_t score);
-void drawFood();
+void drawFood(void);
 int drawSnake(snake *s, snakeDirection dir);
 void initSnake(snake *s);
 void drawEmptyBlock();

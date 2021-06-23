@@ -105,7 +105,6 @@ void initSnake(snake *s)
         s->body[s->size - 1] = s->tail;
 
         memset(blockField, 0, sizeof(blockField));
-
 }
 
 blockStatus checkBlockStatus(int blockXPosition, int blockYPosition)
@@ -120,6 +119,10 @@ blockStatus checkBlockStatus(int blockXPosition, int blockYPosition)
                 else if (blockField[blockXPosition][blockYPosition] == EMPTY_BLOCK)
                 {
                         return EMPTY_BLOCK;
+                }
+                else if (blockField[blockXPosition][blockYPosition] == FOOD_BLOCK)
+                {
+                        return FOOD_BLOCK;
                 }
                 else
                         return UNKOWN_BLOCK;
@@ -151,27 +154,46 @@ void drawBlock(uint8_t blockXPosition, uint8_t blockYPosition, blockStatus block
 
                         //@TODO move both if checks and all code to another function, and just call this function here
 
-                        if (blockField[blockXPosition + 1][blockYPosition] == EMPTY_BLOCK)
+                        for (int i = 0; i < BLOCK_SIDE_TOTAL_PIXELS; i++)
                         {
-                                //write 0x0F
-                                for (int i = 0; i < BLOCK_SIDE_TOTAL_PIXELS; i++)
-                                {
-                                        OLED_SetCursor(convertLineToPage(line), col + i);
-                                        oledSendByte(0xFF);
-                                }
-
-                                blockField[blockXPosition][blockYPosition] = FULL_BLOCK;
+                                OLED_SetCursor(convertLineToPage(line), col + i);
+                                oledSendByte(0xFF);
                         }
-                        else if (blockField[blockXPosition + 1][blockYPosition] == FULL_BLOCK)
+
+                        blockField[blockXPosition][blockYPosition] = FULL_BLOCK;
+                }
+
+                else
+                {
+                        //error
+                        //OLED_Clear();
+                }
+        }
+        else if (blockTypeToDraw == EMPTY_BLOCK)
+        {
+
+                for (int i = 0; i < BLOCK_SIDE_TOTAL_PIXELS; i++)
+                {
+                        OLED_SetCursor(convertLineToPage(line), col + i);
+                        oledSendByte(0X00);
+                }
+
+                blockField[blockXPosition][blockYPosition] = EMPTY_BLOCK;
+        }
+
+        else if (blockTypeToDraw == FOOD_BLOCK)
+        {
+
+                if (checkBlockStatus(blockXPosition, blockYPosition) == EMPTY_BLOCK)
+                {
+
+                        for (int i = 0; i < BLOCK_SIDE_TOTAL_PIXELS; i++)
                         {
-                                for (int i = 0; i < BLOCK_SIDE_TOTAL_PIXELS; i++)
-                                {
-                                        OLED_SetCursor(convertLineToPage(line), col + i);
-                                        oledSendByte(0XFF);
-                                }
-
-                                blockField[blockXPosition][blockYPosition] = FULL_BLOCK;
+                                OLED_SetCursor(convertLineToPage(line), col + i);
+                                oledSendByte(0xFF);
                         }
+
+                        blockField[blockXPosition][blockYPosition] = FOOD_BLOCK;
                 }
 
                 else
@@ -180,62 +202,6 @@ void drawBlock(uint8_t blockXPosition, uint8_t blockYPosition, blockStatus block
                         OLED_Clear();
                 }
         }
-        else if (blockTypeToDraw == EMPTY_BLOCK)
-        {
-                if (blockMask == 0x0F)
-                {
-                        if (blockField[blockXPosition + 1][blockYPosition] == EMPTY_BLOCK)
-                        {
-                                for (int i = 0; i < BLOCK_SIDE_TOTAL_PIXELS; i++)
-                                {
-                                        OLED_SetCursor(convertLineToPage(line), col + i);
-                                        oledSendByte(0X00);
-                                }
-
-                                blockField[blockXPosition][blockYPosition] = EMPTY_BLOCK;
-                        }
-                        else if (blockField[blockXPosition + 1][blockYPosition] == FULL_BLOCK)
-                        {
-                                for (int i = 0; i < BLOCK_SIDE_TOTAL_PIXELS; i++)
-                                {
-                                        OLED_SetCursor(convertLineToPage(line), col + i);
-                                        oledSendByte(0X00);
-                                }
-
-                                blockField[blockXPosition][blockYPosition] = EMPTY_BLOCK;
-                        }
-                }
-
-                if (blockMask == 0xF0)
-                {
-                        if (blockField[blockXPosition - 1][blockYPosition] == EMPTY_BLOCK)
-                        {
-                                for (int i = 0; i < BLOCK_SIDE_TOTAL_PIXELS; i++)
-                                {
-                                        OLED_SetCursor(convertLineToPage(line), col + i);
-                                        oledSendByte(0X00);
-                                }
-
-                                blockField[blockXPosition][blockYPosition] = EMPTY_BLOCK;
-                        }
-                        else if (blockField[blockXPosition - 1][blockYPosition] == FULL_BLOCK)
-                        {
-                                for (int i = 0; i < BLOCK_SIDE_TOTAL_PIXELS; i++)
-                                {
-                                        OLED_SetCursor(convertLineToPage(line), col + i);
-                                        oledSendByte(0X00);
-                                }
-
-                                blockField[blockXPosition][blockYPosition] = EMPTY_BLOCK;
-                        }
-                }
-        }
-}
-
-void drawFood(snakeDirection dir)
-{
-        //@TODO: function to randomize which position food will appear
-        return 0;
 }
 
 int drawSnake(snake *s, snakeDirection dir) //@todo remove dir, since snake type already have direction member
@@ -339,10 +305,19 @@ int drawSnake(snake *s, snakeDirection dir) //@todo remove dir, since snake type
                 }
         }
 
+        if (blockField[s->head.snakeSegment.xCoordinate][s->head.snakeSegment.yCoordinate] == FOOD_BLOCK)
+        {
+                blockField[s->head.snakeSegment.xCoordinate][s->head.snakeSegment.yCoordinate] = FULL_BLOCK;
+
+                s->head.snakeSegment.xCoordinate = s->head.snakeSegment.xCoordinate;
+                s->head.snakeSegment.yCoordinate = s->head.snakeSegment.yCoordinate;
+
+                s->size = s->size + 1;
+        }
+
         s->body[0] = s->head;
 
         drawBlock(s->head.snakeSegment.xCoordinate, s->head.snakeSegment.yCoordinate, FULL_BLOCK);
-        _delay_ms(delay_ms);
 
         drawBlock(s->tail.snakeSegment.xCoordinate, s->tail.snakeSegment.yCoordinate, EMPTY_BLOCK);
 
@@ -401,6 +376,21 @@ void drawScore(uint8_t score)
         OLED_SetCursor(0, 0);
         OLED_Printf("%u", score);
         _delay_ms(100);
+}
+
+void drawFood()
+{
+        if(checkBlockStatus(1,3) == EMPTY_BLOCK)
+        {
+                drawBlock(1, 3, FOOD_BLOCK);
+                return;
+        }
+        else if(checkBlockStatus(1,11) == EMPTY_BLOCK)
+        {
+                drawBlock(1, 11, FOOD_BLOCK);
+                return;
+        }
+        
 }
 
 uint8_t topToBottom(uint8_t data, uint8_t toggle)

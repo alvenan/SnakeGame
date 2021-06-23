@@ -62,9 +62,6 @@ int main()
                 {
                         drawSnake(&snakeHandler, snakeHandler.direction);
                 }
-
-                drawFood();
-                drawScore(1);
 #else
                 int steps;
 
@@ -89,6 +86,7 @@ int main()
                 drawSnake(&snakeHandler, UP);
                 _delay_ms(200);
 #endif
+                drawFood();
 
                 drawSnake(&snakeHandler, RIGHT);
                 _delay_ms(200);
@@ -147,6 +145,9 @@ int main()
                 // _delay_ms(500);
                 // }
 #endif
+
+                drawScore(1);
+
         }
         return 0;
 }
