@@ -77,37 +77,35 @@ void increaseSnakeBody()
 {
 }
 
-snake initSnake(void)
+void initSnake(snake *s)
 {
-        snake s;
 
-        s.size = 3;
-        s.direction = RIGHT;
+        s->size = 3;
+        s->direction = RIGHT;
 
-        s.head.snakeSegment.xCoordinate = 0;
-        s.head.snakeSegment.yCoordinate = 10;
-        s.head.snakeSegment.status = FULL_BLOCK;
-        s.head.next = &s.body[1];
+        s->head.snakeSegment.xCoordinate = 0;
+        s->head.snakeSegment.yCoordinate = 10;
+        s->head.snakeSegment.status = FULL_BLOCK;
+        s->head.next = &s->body[1];
 
-        s.tail.snakeSegment.xCoordinate = 0;
-        s.tail.snakeSegment.yCoordinate = 10 - (s.size - 1);
-        s.tail.snakeSegment.status = FULL_BLOCK;
-        s.tail.next = NULL;
+        s->tail.snakeSegment.xCoordinate = 0;
+        s->tail.snakeSegment.yCoordinate = 10 - (s->size - 1);
+        s->tail.snakeSegment.status = FULL_BLOCK;
+        s->tail.next = NULL;
 
-        s.body[0] = s.head;
+        s->body[0] = s->head;
 
-        for (int i = 1; i < (s.size - 1); i++)
+        for (int i = 1; i < (s->size - 1); i++)
         {
-                s.body[i].snakeSegment.xCoordinate = 0;
-                s.body[i].snakeSegment.yCoordinate = (10 - i);
-                s.body[i].snakeSegment.status = FULL_BLOCK;
+                s->body[i].snakeSegment.xCoordinate = 0;
+                s->body[i].snakeSegment.yCoordinate = (10 - i);
+                s->body[i].snakeSegment.status = FULL_BLOCK;
         }
 
-        s.body[s.size - 1] = s.tail;
+        s->body[s->size - 1] = s->tail;
 
         memset(blockField, 0, sizeof(blockField));
 
-        return s;
 }
 
 blockStatus checkBlockStatus(int blockXPosition, int blockYPosition)
@@ -153,30 +151,27 @@ void drawBlock(uint8_t blockXPosition, uint8_t blockYPosition, blockStatus block
 
                         //@TODO move both if checks and all code to another function, and just call this function here
 
-                                if (blockField[blockXPosition + 1][blockYPosition] == EMPTY_BLOCK)
+                        if (blockField[blockXPosition + 1][blockYPosition] == EMPTY_BLOCK)
+                        {
+                                //write 0x0F
+                                for (int i = 0; i < BLOCK_SIDE_TOTAL_PIXELS; i++)
                                 {
-                                        //write 0x0F
-                                        for (int i = 0; i < BLOCK_SIDE_TOTAL_PIXELS; i++)
-                                        {
-                                                OLED_SetCursor(convertLineToPage(line), col + i);
-                                                oledSendByte(0xFF);
-                                        }
-
-                                        blockField[blockXPosition][blockYPosition] = FULL_BLOCK;
-                                }
-                                else if (blockField[blockXPosition + 1][blockYPosition] == FULL_BLOCK)
-                                {
-                                        for (int i = 0; i < BLOCK_SIDE_TOTAL_PIXELS; i++)
-                                        {
-                                                OLED_SetCursor(convertLineToPage(line), col + i);
-                                                oledSendByte(0XFF);
-                                        }
-
-                                        blockField[blockXPosition][blockYPosition] = FULL_BLOCK;
+                                        OLED_SetCursor(convertLineToPage(line), col + i);
+                                        oledSendByte(0xFF);
                                 }
 
- 
-                        
+                                blockField[blockXPosition][blockYPosition] = FULL_BLOCK;
+                        }
+                        else if (blockField[blockXPosition + 1][blockYPosition] == FULL_BLOCK)
+                        {
+                                for (int i = 0; i < BLOCK_SIDE_TOTAL_PIXELS; i++)
+                                {
+                                        OLED_SetCursor(convertLineToPage(line), col + i);
+                                        oledSendByte(0XFF);
+                                }
+
+                                blockField[blockXPosition][blockYPosition] = FULL_BLOCK;
+                        }
                 }
 
                 else
@@ -237,27 +232,27 @@ void drawBlock(uint8_t blockXPosition, uint8_t blockYPosition, blockStatus block
         }
 }
 
-void drawFood(snakeDirection dir) {
+void drawFood(snakeDirection dir)
+{
         //@TODO: function to randomize which position food will appear
         return 0;
 }
 
-int drawSnake(snake *s, snakeDirection dir)
+int drawSnake(snake *s, snakeDirection dir) //@todo remove dir, since snake type already have direction member
 {
         int delay_ms = 10;
         //@TODO check limits of array
-        snakeBody temp = s->body[s->size - 2];
-        snakeBody aux;
+        snake aux;
 
-        snakeBody currentTail = s->tail;
-        snakeBody currentHead = s->head;
+        snakeBody temp = s->body[s->size - 2];
+
+        memcpy(&aux, s, sizeof(snake));
 
         for (int i = 2; i < (s->size - 1); i++)
         {
-                aux = s->body[i - 1];
                 //@TODO change this to memcpy?
-                s->body[i].snakeSegment = aux.snakeSegment;
-                s->body[i].next = aux.next;
+                s->body[i].snakeSegment = aux.body[i - 1].snakeSegment;
+                s->body[i].next = aux.body[i - 1].next;
         }
 
         s->body[1].snakeSegment = s->head.snakeSegment;
@@ -267,41 +262,20 @@ int drawSnake(snake *s, snakeDirection dir)
         {
                 switch (dir)
                 {
-                case (RIGHT):
-
-                        // s->body[1].snakeSegment = s->head.snakeSegment;
-
-                        s->head.snakeSegment.yCoordinate = s->head.snakeSegment.yCoordinate + 1;
-                        s->body[0] = s->head;
-
-                        drawBlock(s->head.snakeSegment.xCoordinate, s->head.snakeSegment.yCoordinate, FULL_BLOCK);
-                        _delay_ms(delay_ms);
-                        //drawBlock(s->head.snakeSegment.xCoordinate, s->head.snakeSegment.yCoordinate, EMPTY_BLOCK);
-                        drawBlock(s->tail.snakeSegment.xCoordinate, s->tail.snakeSegment.yCoordinate, EMPTY_BLOCK);
-
-                        // s->tail.snakeSegment.yCoordinate = s->tail.snakeSegment.yCoordinate + 1;
-                        s->tail.snakeSegment = temp.snakeSegment;
-                        // s->tail.next = &s->body[s->size-2];
-                        s->body[s->size - 1] = s->tail;
-
+                case (UP):
+                        s->head.snakeSegment.xCoordinate = s->head.snakeSegment.xCoordinate - 1;
                         break;
+
+                case (RIGHT):
+                        s->head.snakeSegment.yCoordinate = s->head.snakeSegment.yCoordinate + 1;
+                        break;
+
                 case (DOWN):
-                        // s->body[1].snakeSegment = s->head.snakeSegment;
-
                         s->head.snakeSegment.xCoordinate = s->head.snakeSegment.xCoordinate + 1;
-                        s->body[0] = s->head;
+                        break;
 
-                        drawBlock(s->head.snakeSegment.xCoordinate, s->head.snakeSegment.yCoordinate, FULL_BLOCK);
-                        _delay_ms(delay_ms);
-                        //drawBlock(s->head.snakeSegment.xCoordinate, s->head.snakeSegment.yCoordinate, EMPTY_BLOCK);
-                        drawBlock(s->tail.snakeSegment.xCoordinate, s->tail.snakeSegment.yCoordinate, EMPTY_BLOCK);
-
-                        // s->tail.snakeSegment.yCoordinate = s->tail.snakeSegment.yCoordinate + 1;
-                        // s->tail = s->tail.next;
-                        s->tail.snakeSegment = temp.snakeSegment;
-                        // s->tail.next = &s->body[s->size-2];
-                        s->body[s->size - 1] = s->tail;
-
+                case (LEFT):
+                        s->head.snakeSegment.yCoordinate = s->head.snakeSegment.yCoordinate - 1;
                         break;
 
                 default:
@@ -310,32 +284,71 @@ int drawSnake(snake *s, snakeDirection dir)
         }
         else
         {
-
-                switch (dir)
+                switch (dir) //@TODO CHANGE THIS TO IF AND ELSE: IF(UP || DOWN) IF(LEFT || RIGHT)
                 {
+                case (UP):
+                        if (s->direction == LEFT || s->direction == RIGHT)
+                        {
+                                s->head.snakeSegment.xCoordinate = s->head.snakeSegment.xCoordinate - 1;
+                                s->direction = dir;
+                        }
+                        else
+                        {
+                                s->head.snakeSegment.xCoordinate = s->head.snakeSegment.xCoordinate + 1;
+                        }
+                        break;
+
+                case (RIGHT):
+                        if (s->direction == UP || s->direction == DOWN)
+                        {
+                                s->head.snakeSegment.yCoordinate = s->head.snakeSegment.yCoordinate + 1;
+                                s->direction = dir;
+                        }
+                        else
+                        {
+                                s->head.snakeSegment.yCoordinate = s->head.snakeSegment.yCoordinate - 1;
+                        }
+                        break;
+
                 case (DOWN):
-                        // s->body[1].snakeSegment = s->head.snakeSegment;
+                        if (s->direction == LEFT || s->direction == RIGHT)
+                        {
+                                s->head.snakeSegment.xCoordinate = s->head.snakeSegment.xCoordinate + 1;
+                                s->direction = dir;
+                        }
+                        else
+                        {
+                                s->head.snakeSegment.xCoordinate = s->head.snakeSegment.xCoordinate - 1;
+                        }
+                        break;
 
-                        s->head.snakeSegment.xCoordinate = s->head.snakeSegment.xCoordinate + 1;
-                        s->body[0] = s->head;
-
-                        drawBlock(s->head.snakeSegment.xCoordinate, s->head.snakeSegment.yCoordinate, FULL_BLOCK);
-                        _delay_ms(delay_ms);
-                        //drawBlock(s->head.snakeSegment.xCoordinate, s->head.snakeSegment.yCoordinate, EMPTY_BLOCK);
-                        drawBlock(s->tail.snakeSegment.xCoordinate, s->tail.snakeSegment.yCoordinate, EMPTY_BLOCK);
-
-                        // s->tail.snakeSegment.yCoordinate = s->tail.snakeSegment.yCoordinate + 1;
-
-                        s->tail.snakeSegment = temp.snakeSegment;
-                        // s->tail.next = &s->body[s->size-2];
-                        s->body[s->size - 1] = s->tail;
-
+                case (LEFT):
+                        if (s->direction == UP || s->direction == DOWN)
+                        {
+                                s->head.snakeSegment.yCoordinate = s->head.snakeSegment.yCoordinate - 1;
+                                s->direction = dir;
+                        }
+                        else
+                        {
+                                s->head.snakeSegment.yCoordinate = s->head.snakeSegment.yCoordinate + 1;
+                        }
                         break;
 
                 default:
                         break;
                 }
         }
+
+        s->body[0] = s->head;
+
+        drawBlock(s->head.snakeSegment.xCoordinate, s->head.snakeSegment.yCoordinate, FULL_BLOCK);
+        _delay_ms(delay_ms);
+
+        drawBlock(s->tail.snakeSegment.xCoordinate, s->tail.snakeSegment.yCoordinate, EMPTY_BLOCK);
+
+        s->tail.snakeSegment = temp.snakeSegment;
+
+        s->body[s->size - 1] = s->tail;
         return 0;
 }
 
@@ -346,7 +359,7 @@ void drawWall()
                 OLED_SetCursor(page, 0);
                 for (uint8_t column = 0; column < 128; column++)
                 {
-                        if ((column == 4) || (column == 123))
+                        if ((column == 3) || (column == 124))
                         {
                                 if (page == 1)
                                 {

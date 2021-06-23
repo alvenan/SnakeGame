@@ -31,7 +31,8 @@ typedef enum snakeDirectionType {
     UP,
     DOWN,
     RIGHT,
-    LEFT
+    LEFT,
+    INVALID
 }snakeDirection;
 
 
@@ -70,7 +71,7 @@ void drawWall();
 void drawScore(uint8_t score);
 void drawFood();
 int drawSnake(snake *s, snakeDirection dir);
-snake initSnake(void);
+void initSnake(snake *s);
 void drawEmptyBlock();
 
 uint8_t topToBottom(uint8_t data, uint8_t toggle);

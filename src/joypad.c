@@ -1,59 +1,46 @@
 #include "joypad.h"
 
-volatile int pressedDirection = 0;
+volatile int pressedDirection = BT_RELEASED;
 
-INT_ROUTINE
+ISR(PCINT0_vect)
 {
-        if (BUTTON_DOWN)
+
+        //@todo change to switch case
+        if (BUTTON_UP)
         {
-                pressedDirection = 10;
+                pressedDirection = BT_UP;
         }
-        // if (BUTTON_UP) {
-        //         pressedDirection = BT_UP;
-        //         OLED_SetCursor(0, 0);
-        //         OLED_Clear();
-        //         pressedDirection = BT_UP;
-        //         OLED_Printf("UP");
-        // } else if (BUTTON_DOWN) {
-        //         pressedDirection = BT_DOWN;
-        //         OLED_SetCursor(0, 0);
-        //         OLED_Clear();
-        //         pressedDirection = BT_UP;
-        //         OLED_Printf("DOWN");
-        // } else if (BUTTON_RIGHT) {
-        //         pressedDirection = BT_RIGHT;
-        //         OLED_SetCursor(0, 0);
-        //         OLED_Clear();
-        //         pressedDirection = BT_UP;
-        //         OLED_Printf("RIGHT");
-        // } else if (BUTTON_LEFT) {
-        //         pressedDirection = BT_LEFT;
-        //         OLED_SetCursor(0, 0);
-        //         OLED_Clear();
-        //         pressedDirection = BT_UP;
-        //         OLED_Printf("LEFT");
-        // } else {
-        //         pressedDirection = BT_RELEASED;
-        //         OLED_SetCursor(0, 0);
-        //         OLED_Clear();
-        //         pressedDirection = BT_UP;
-        //         OLED_Printf("RELEASED");
-        // }
+        else if (BUTTON_DOWN)
+        {
+                pressedDirection = BT_DOWN;
+        }
+        else if (BUTTON_RIGHT)
+        {
+                pressedDirection = BT_RIGHT;
+        }
+        else if (BUTTON_LEFT)
+        {
+                pressedDirection = BT_LEFT;
+        }
+        else
+        {
+                pressedDirection = BT_RELEASED;
+        }
 }
 
 void joypad_Init()
 {
-        // PB0_SET_IN;
-        // PB0_SET_INT;
+        PB0_SET_IN;
+        PB0_SET_INT;
 
         PB1_SET_IN;
         PB1_SET_INT;
 
-        // PB2_SET_IN;
-        // PB2_SET_INT;
+        PB2_SET_IN;
+        PB2_SET_INT;
 
-        // PB3_SET_IN;
-        // PB3_SET_INT;
+        PB3_SET_IN;
+        PB3_SET_INT;
 
         PCINT0_VECT_SET;
 }
