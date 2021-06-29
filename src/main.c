@@ -1,20 +1,23 @@
 #include "joypad.h"
 #include "snake.h"
+#include "uart.h"
 #include <stdio.h>
 #include <util/atomic.h>
 
 #define TEST_DRAW_BLOCK_FUNCTION 0
 #define TEST_SNAKE_MOVEMENT 1
 
-#define RELEASE_VERSION 1
+#define RELEASE_VERSION 0
 
 #define XSTR(x) STR(x)
 #define STR(x) #x
 
 #pragma message "The value of ABC: " XSTR(TEST_SNAKE_MOVEMENT)
 
-int delay = 20;
+int qdelay = 20;
 int count = 0;
+
+int foodDelay = 0;
 
 int main()
 {
@@ -65,7 +68,15 @@ int main()
                         drawSnake(&snakeHandler, snakeHandler.direction);
                 }
 
-                drawFood();
+                if (foodDelay == 50)
+                {
+                        drawFood();
+                        foodDelay = 0;
+                }
+                else
+                {
+                        foodDelay++;
+                }
 
 #else
                 int steps;
@@ -91,7 +102,7 @@ int main()
                 drawSnake(&snakeHandler, UP);
                 _delay_ms(200);
 #endif
-                if(count == 2)
+                if (count == 2)
                 {
                         drawFood();
                         count = 0;
@@ -100,7 +111,6 @@ int main()
                 {
                         count++;
                 }
-                
 
                 drawSnake(&snakeHandler, RIGHT);
                 _delay_ms(delay);
@@ -159,7 +169,6 @@ int main()
                 // _delay_ms(500);
                 // }
 #endif
-
         }
         return 0;
 }
