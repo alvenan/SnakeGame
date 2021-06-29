@@ -6,7 +6,7 @@
 #define TEST_DRAW_BLOCK_FUNCTION 0
 #define TEST_SNAKE_MOVEMENT 1
 
-#define RELEASE_VERSION 0
+#define RELEASE_VERSION 1
 
 #define XSTR(x) STR(x)
 #define STR(x) #x
@@ -18,7 +18,7 @@ int count = 0;
 
 int foodDelay = 0;
 int delay = 0;
-volatile int pressedDirection = 0;
+volatile int pressedDirection = BT_RELEASED;
 
 int main()
 {
@@ -26,7 +26,6 @@ int main()
 
         OLED_Init();  // initialize the OLED
         OLED_Clear(); // clear the doScore()display (for good measure)
-
 #if TEST_DRAW_BLOCK_FUNCTION == 1
         while (1)
         {
@@ -53,7 +52,7 @@ int main()
 
 #if RELEASE_VERSION == 1
 
-        joypad_Init();
+        //joypad_Init();
 #endif
 
         for (;;)
@@ -68,16 +67,17 @@ int main()
                 {
                         drawSnake(&snakeHandler, snakeHandler.direction);
                 }
+                // if (foodDelay == 50)
+                // {
+                //         drawFood();
+                //         foodDelay = 0;
+                // }
+                // else
+                // {
+                //         foodDelay++;
+                // }
 
-                if (foodDelay == 50)
-                {
-                        drawFood();
-                        foodDelay = 0;
-                }
-                else
-                {
-                        foodDelay++;
-                }
+                _delay_ms(200);
 
 #else
                 int steps;
