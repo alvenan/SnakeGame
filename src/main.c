@@ -1,6 +1,5 @@
 #include "joypad.h"
 #include "snake.h"
-#include "uart.h"
 #include <stdio.h>
 #include <util/atomic.h>
 
@@ -18,6 +17,8 @@ int qdelay = 20;
 int count = 0;
 
 int foodDelay = 0;
+int delay = 0;
+volatile int pressedDirection = 0;
 
 int main()
 {
