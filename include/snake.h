@@ -18,24 +18,65 @@
 #define LEFT_WALL 0
 #define RIGHT_WALL 127
 
-typedef enum snakeDirectionType { UP, DOWN, RIGHT, LEFT } snakeDirection;
+#define SET_BLOCK_MASK(BLOCK_X_POS) ((BLOCK_X_POS%2 == 0)? 0x0F : 0xF0)
 
-typedef struct snakeType {
-        int size;
-        int *head;
-        int *tail;
 
-        snakeDirection direction;
+typedef enum blockStatusType {
+    EMPTY_BLOCK,
+    FULL_BLOCK,
+    FOOD_BLOCK,
+    UNKOWN_BLOCK
+}blockStatus;
 
-        int (*draw)(snakeDirection);
-} snake;
+typedef enum snakeDirectionType {
+    UP,
+    DOWN,
+    RIGHT,
+    LEFT,
+    INVALID
+}snakeDirection;
 
-void drawBlock(int x_coordinate, int y_coordinate);
+
+
+typedef struct pixelType{
+    uint8_t page;
+    uint8_t bit;
+    uint8_t segment;
+}pixel;
+
+typedef struct blockType{
+    uint8_t xCoordinate;
+    uint8_t yCoordinate;
+    blockStatus status;
+}block;
+
+typedef struct snakeBodyType snakeBody;
+
+struct snakeBodyType{
+    block snakeSegment;
+    snakeBody *next;
+};
+
+typedef struct snakeType{
+    int size;
+    snakeBody head;
+    snakeBody tail;
+
+    snakeBody body[SCREEN_TOTAL_BLOCKS];
+    snakeDirection direction;
+}snake;
+
+
+extern int score;
+bool screenHasFood;
+
+void drawBlock(uint8_t x_coordinate, uint8_t y_coordinate, blockStatus blockTypeToDraw);
 void drawWall();
 void drawScore(uint8_t score);
-void drawFood();
-int drawSnake(snakeDirection dir);
-void drawEmptySpace();
+void drawFood(void);
+int drawSnake(snake *s, snakeDirection dir);
+void initSnake(snake *s);
+void drawEmptyBlock();
 
 uint8_t topToBottom(uint8_t data, uint8_t toggle);
 uint8_t leftToRight(uint8_t data, uint8_t toggle);
@@ -46,5 +87,7 @@ bool checkPixel(uint8_t line, uint8_t column);
 void initPixelMatrix();
 
 void onUserInput();
+
+
 
 #endif

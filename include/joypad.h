@@ -8,6 +8,12 @@
 
 #include "oled.h"
 
+#include <avr/interrupt.h>
+#include <avr/io.h>
+#include <util/delay.h>
+
+#include "oled.h"
+
 #define BUTTON_LEFT (PINB & (1 << PINB0))
 #define BUTTON_DOWN (PINB & (1 << PINB1))
 #define BUTTON_RIGHT (PINB & (1 << PINB2))
@@ -27,7 +33,11 @@
 
 #define INT_ROUTINE ISR(PCINT0_vect)
 
-typedef enum buttonDirectionsType {
+
+
+
+typedef enum buttonDirectionsType
+{
         BT_UP,
         BT_DOWN,
         BT_RIGHT,
@@ -35,8 +45,8 @@ typedef enum buttonDirectionsType {
         BT_RELEASED
 } buttonDirection;
 
-int pressedDirection;
+extern volatile int pressedDirection;
 
-void controller_Init();
+void joypad_Init();
 
 #endif
