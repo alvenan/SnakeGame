@@ -52,7 +52,7 @@ int main()
 
 #if RELEASE_VERSION == 1
 
-        //joypad_Init();
+        joypad_Init();
 #endif
 
         for (;;)
@@ -67,15 +67,15 @@ int main()
                 {
                         drawSnake(&snakeHandler, snakeHandler.direction);
                 }
-                // if (foodDelay == 50)
-                // {
-                //         drawFood();
-                //         foodDelay = 0;
-                // }
-                // else
-                // {
-                //         foodDelay++;
-                // }
+                if (foodDelay == 50)
+                {
+                        drawFood();
+                        foodDelay = 0;
+                }
+                else
+                {
+                        foodDelay++;
+                }
 
                 _delay_ms(200);
 
