@@ -4,6 +4,8 @@
 uint8_t pixel_matrix[8][128]; // Matrix
 uint8_t page_line[2];         // [0] -> page; [1] -> line
 
+int score = 0;
+
 //@TODO change to use
 /*
 vector[max_col_inside_game_area]
@@ -105,6 +107,9 @@ void initSnake(snake *s)
         s->body[s->size - 1] = s->tail;
 
         memset(blockField, 0, sizeof(blockField));
+
+        score = 0;
+        screenHasFood = 0;
 }
 
 blockStatus checkBlockStatus(int blockXPosition, int blockYPosition)
@@ -307,6 +312,10 @@ int drawSnake(snake *s, snakeDirection dir) //@todo remove dir, since snake type
 
         if (blockField[s->head.snakeSegment.xCoordinate][s->head.snakeSegment.yCoordinate] == FOOD_BLOCK)
         {
+                score++;
+                drawScore(score);
+                screenHasFood = 0;
+
                 blockField[s->head.snakeSegment.xCoordinate][s->head.snakeSegment.yCoordinate] = FULL_BLOCK;
 
                 s->head.snakeSegment.xCoordinate = s->head.snakeSegment.xCoordinate;
@@ -380,17 +389,26 @@ void drawScore(uint8_t score)
 
 void drawFood()
 {
-        if(checkBlockStatus(1,3) == EMPTY_BLOCK)
+
+        if (screenHasFood)
         {
-                drawBlock(1, 3, FOOD_BLOCK);
                 return;
         }
-        else if(checkBlockStatus(1,11) == EMPTY_BLOCK)
+        else
         {
-                drawBlock(1, 11, FOOD_BLOCK);
+                if (checkBlockStatus(0, 3) == EMPTY_BLOCK)
+                {
+                        drawBlock(0, 3, FOOD_BLOCK);
+                }
+                else if (checkBlockStatus(0, 11) == EMPTY_BLOCK)
+                {
+                        drawBlock(1, 11, FOOD_BLOCK);
+                }
+                screenHasFood = 1;
+
+                _delay_ms(500);
                 return;
         }
-        
 }
 
 uint8_t topToBottom(uint8_t data, uint8_t toggle)

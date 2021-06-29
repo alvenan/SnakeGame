@@ -14,6 +14,9 @@
 
 #pragma message "The value of ABC: " XSTR(TEST_SNAKE_MOVEMENT)
 
+int delay = 20;
+int count = 0;
+
 int main()
 {
         snake snakeHandler = {0};
@@ -89,48 +92,57 @@ int main()
                 drawSnake(&snakeHandler, UP);
                 _delay_ms(200);
 #endif
-                drawFood();
+                if(count == 2)
+                {
+                        drawFood();
+                        count = 0;
+                }
+                else
+                {
+                        count++;
+                }
+                
 
                 drawSnake(&snakeHandler, RIGHT);
-                _delay_ms(200);
+                _delay_ms(delay);
 
                 drawSnake(&snakeHandler, RIGHT);
-                _delay_ms(200);
+                _delay_ms(delay);
 
                 drawSnake(&snakeHandler, RIGHT);
-                _delay_ms(200);
+                _delay_ms(delay);
 
                 drawSnake(&snakeHandler, RIGHT);
-                _delay_ms(200);
+                _delay_ms(delay);
 
                 drawSnake(&snakeHandler, DOWN);
-                _delay_ms(200);
+                _delay_ms(delay);
 
                 drawSnake(&snakeHandler, DOWN);
-                _delay_ms(200);
+                _delay_ms(delay);
 
                 drawSnake(&snakeHandler, DOWN);
-                _delay_ms(200);
+                _delay_ms(delay);
 
                 drawSnake(&snakeHandler, DOWN);
-                _delay_ms(200);
+                _delay_ms(delay);
 
                 for (steps = 0; steps < 14; steps++)
                 {
                         drawSnake(&snakeHandler, LEFT);
-                        _delay_ms(200);
+                        _delay_ms(delay);
                 }
 
                 for (steps = 0; steps < 4; steps++)
                 {
                         drawSnake(&snakeHandler, UP);
-                        _delay_ms(200);
+                        _delay_ms(delay);
                 }
 
                 for (steps = 0; steps < 10; steps++)
                 {
                         drawSnake(&snakeHandler, RIGHT);
-                        _delay_ms(200);
+                        _delay_ms(delay);
                 }
                 // if (snakeHandler.head.snakeSegment.yCoordinate == 15 || snakeHandler.head.snakeSegment.xCoordinate == 5)
                 // {
@@ -149,7 +161,6 @@ int main()
                 // }
 #endif
 
-                drawScore(1);
         }
         return 0;
 }

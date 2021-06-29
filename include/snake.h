@@ -67,6 +67,9 @@ typedef struct snakeType{
 }snake;
 
 
+extern int score;
+bool screenHasFood;
+
 void drawBlock(uint8_t x_coordinate, uint8_t y_coordinate, blockStatus blockTypeToDraw);
 void drawWall();
 void drawScore(uint8_t score);
