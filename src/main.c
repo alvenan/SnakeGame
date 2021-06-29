@@ -1,13 +1,12 @@
 #include "joypad.h"
 #include "snake.h"
-#include "uart.h"
 #include <stdio.h>
 #include <util/atomic.h>
 
 #define TEST_DRAW_BLOCK_FUNCTION 0
 #define TEST_SNAKE_MOVEMENT 1
 
-#define RELEASE_VERSION 0
+#define RELEASE_VERSION 1
 
 #define XSTR(x) STR(x)
 #define STR(x) #x
